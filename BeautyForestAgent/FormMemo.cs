@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BeautyForestAgent
 {
@@ -25,6 +26,77 @@ namespace BeautyForestAgent
         private void ToolStripStatusLabel1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void BtnLoadFileSelect_Click(object sender, EventArgs e)
+        {
+            DialogResult result = this.loadFileDlg.ShowDialog();
+            switch (result)
+            {
+                case DialogResult.OK:
+                    this.txtLoadFile.Text = this.loadFileDlg.FileName;
+                    break;
+                case DialogResult.Cancel:
+                    MessageBox.Show("취소하셨습니다", "알림");
+                    break;
+            }
+        }
+
+        private void BtnLoadFile_Click(object sender, EventArgs e)
+        {
+            if (this.txtLoadFile.Text == "")
+            {
+                MessageBox.Show("파일을 선택해 주세요", "에러",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if (!File.Exists(this.txtLoadFile.Text))
+            {
+                MessageBox.Show("불러올 파일이 없습니다", "에러",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            using (StreamReader sr = new StreamReader(this.txtLoadFile.Text))
+            {
+                this.txtLoadText.Text = sr.ReadToEnd();
+            }
+        }
+
+        private void BtnSaveFileSelect_Click(object sender, EventArgs e)
+        {
+            DialogResult result = this.saveFileDlg.ShowDialog();
+            switch (result)
+            {
+                case DialogResult.OK:
+                    this.txtSaveFile.Text = this.saveFileDlg.FileName;
+                    break;
+                case DialogResult.Cancel:
+                    MessageBox.Show("취소하셨습니다", "알림");
+                    break;
+            }
+        }
+
+        private void BtnSaveFile_Click(object sender, EventArgs e)
+        {
+            if (this.txtSaveFile.Text == "")
+            {
+                MessageBox.Show("저장할 파일을 선택해 주세요", "에러",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(this.txtSaveFile.Text))
+                {
+                    sw.WriteLine(this.txtSaveText.Text);
+                }
+                MessageBox.Show("파일 저장 성공", "알림",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                MessageBox.Show("파일 저장에 실패했습니다", "에러",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
         }
     }
 }
